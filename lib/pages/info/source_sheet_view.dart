@@ -202,7 +202,7 @@ class _SourceSheetViewState extends State<_SourceSheetView> {
                   excludeSemantics: true,
                   child: Material(
                     type: MaterialType.transparency,
-                    child: InkWell(
+                    child: TvFocusInkWell(
                       borderRadius: BorderRadius.circular(16),
                       onTap: toggle,
                       child: ConstrainedBox(

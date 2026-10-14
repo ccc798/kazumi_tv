@@ -5,6 +5,7 @@ import 'package:flutter/physics.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 
 import 'package:kazumi/bean/widget/empty_state_widget.dart';
+import 'package:kazumi/bean/widget/tv/tv_focus_inkwell.dart';
 import 'package:kazumi/modules/download/download_module.dart';
 import 'package:kazumi/modules/roads/road_module.dart';
 
@@ -455,8 +456,9 @@ class _RoadSelectorState extends State<_RoadSelector> {
                   open ? colors.secondaryContainer : colors.surfaceContainerLow,
               borderRadius: BorderRadius.circular(open ? 16 : 20),
               clipBehavior: Clip.antiAlias,
-              child: InkWell(
+              child: TvFocusInkWell(
                 focusNode: _focusNode,
+                borderRadius: BorderRadius.circular(open ? 16 : 20),
                 onTapUp: canSwitch ? (_) => _pointerActivation = true : null,
                 onTap: canSwitch ? () => _toggleMenu(controller) : null,
                 child: Padding(

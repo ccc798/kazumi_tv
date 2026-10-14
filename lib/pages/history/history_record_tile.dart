@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kazumi/bean/card/network_img_layer.dart';
 import 'package:kazumi/bean/widget/kazumi_menu.dart';
 import 'package:kazumi/bean/widget/loading_indicator.dart';
+import 'package:kazumi/bean/widget/tv/tv_focus_inkwell.dart';
 import 'package:kazumi/modules/collect/collect_type.dart';
 import 'package:kazumi/modules/history/history_module.dart';
 
@@ -94,7 +95,7 @@ class HistoryRecordTile extends StatelessWidget {
                   history.adapterName,
                   time
                 ].where((text) => text.isNotEmpty).join('，'),
-                child: InkWell(onTap: editing || busy ? null : onPlay),
+                child: TvFocusInkWell(onTap: editing || busy ? null : onPlay),
               ),
             ),
             Padding(

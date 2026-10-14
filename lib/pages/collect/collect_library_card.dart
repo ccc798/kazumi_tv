@@ -190,8 +190,9 @@ class _CollectPosterCard extends StatelessWidget {
             if (year != null) '$year 年',
             if (hasRating) '${item.ratingScore.toStringAsFixed(1)} 分',
           ].join('，'),
-          child: InkWell(
+          child: TvFocusInkWell(
             onTap: onOpen,
+            borderRadius: BorderRadius.circular(compact ? 16 : 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [

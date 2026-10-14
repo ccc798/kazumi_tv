@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:kazumi/bean/card/network_img_layer.dart';
+import 'package:kazumi/bean/widget/tv/tv_focus_inkwell.dart';
 import 'package:kazumi/modules/bangumi/bangumi_item.dart';
 
 class BangumiTimelineCard extends StatelessWidget {
@@ -78,8 +79,9 @@ class BangumiTimelineCard extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(_cornerRadius)),
         ),
         clipBehavior: Clip.antiAlias,
-        child: InkWell(
+        child: TvFocusInkWell(
           onTap: onTap,
+          borderRadius: const BorderRadius.all(Radius.circular(_cornerRadius)),
           child: SizedBox(
             height:
                 heightFor(MediaQuery.textScalerOf(context), compact: compact),
