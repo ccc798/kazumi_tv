@@ -38,6 +38,7 @@ void main() async {
 
   if (Platform.isAndroid) {
     await WebViewFeatureService.initialize();
+    await initializeTelevisionStatus();
   }
 
   try {

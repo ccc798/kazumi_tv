@@ -34,6 +34,7 @@ class MainActivity: AudioServiceActivity() {
     private val CHANNEL = "com.predidit.kazumi/intent"
     private val STORAGE_CHANNEL = "com.predidit.kazumi/storage"
     private val PIP_CHANNEL = "com.predidit.kazumi/pip"
+    private val DEVICE_CHANNEL = "com.predidit.kazumi/device"
     private var intentChannel: MethodChannel? = null
     private var pipChannel: MethodChannel? = null
     private var downloadDirectoryChannel: MethodChannel? = null
@@ -135,6 +136,14 @@ class MainActivity: AudioServiceActivity() {
             }
         }
 
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, DEVICE_CHANNEL).setMethodCallHandler { call, result ->
+            if (call.method == "isTelevision") {
+                result.success(isTelevision())
+            } else {
+                result.notImplemented()
+            }
+        }
+
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, STORAGE_CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "getAvailableStorage") {
                 val path = call.argument<String>("path") ?: filesDir.absolutePath
@@ -204,6 +213,15 @@ class MainActivity: AudioServiceActivity() {
 
     private fun getAndroidSdkVersion(): Int {
         return Build.VERSION.SDK_INT
+    }
+
+    // Android TV / Google TV devices and TV boxes expose the leanback system
+    // feature. Some TV sticks only declare the television feature, so both are
+    // checked. Phones and tablets expose neither.
+    private fun isTelevision(): Boolean {
+        val pm = packageManager
+        return pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK) ||
+            pm.hasSystemFeature(PackageManager.FEATURE_TELEVISION)
     }
 
     // System bars belong to the full size window; replayed on leaving PiP.

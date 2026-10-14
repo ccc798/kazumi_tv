@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:kazumi/bean/card/network_img_layer.dart';
 import 'package:kazumi/bean/dialog/dialog_helper.dart';
+import 'package:kazumi/bean/widget/tv/tv_focus_highlight.dart';
 import 'package:kazumi/modules/bangumi/bangumi_item.dart';
+import 'package:kazumi/utils/device.dart';
 
 // 视频卡片 - 垂直布局
-class BangumiCardV extends StatelessWidget {
+class BangumiCardV extends StatefulWidget {
   const BangumiCardV({
     super.key,
     required this.bangumiItem,
@@ -18,6 +20,20 @@ class BangumiCardV extends StatelessWidget {
   final bool enableHero;
 
   @override
+  State<BangumiCardV> createState() => _BangumiCardVState();
+}
+
+class _BangumiCardVState extends State<BangumiCardV> {
+  bool _focused = false;
+
+  void _onFocusChange(bool hasFocus) {
+    if (!isTelevision() || _focused == hasFocus) {
+      return;
+    }
+    setState(() => _focused = hasFocus);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 0,
@@ -26,43 +42,47 @@ class BangumiCardV extends StatelessWidget {
       child: GestureDetector(
         child: InkWell(
           onTap: () {
-            if (!canTap) {
+            if (!widget.canTap) {
               KazumiDialog.showToast(
                 message: '编辑模式',
               );
               return;
             }
-            context.pushNamed('/info/', arguments: bangumiItem);
+            context.pushNamed('/info/', arguments: widget.bangumiItem);
           },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              AspectRatio(
-                aspectRatio: 0.65,
-                child: LayoutBuilder(builder: (context, boxConstraints) {
-                  final double maxWidth = boxConstraints.maxWidth;
-                  final double maxHeight = boxConstraints.maxHeight;
-                  return enableHero
-                      ? Hero(
-                          transitionOnUserGestures: true,
-                          flightShuttleBuilder:
-                              NetworkImgLayer.heroFlightShuttleBuilder,
-                          tag: bangumiItem.id,
-                          child: NetworkImgLayer(
-                            src: bangumiItem.images['large'] ?? '',
+          onFocusChange: _onFocusChange,
+          child: TvFocusHighlight(
+            focused: _focused,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                AspectRatio(
+                  aspectRatio: 0.65,
+                  child: LayoutBuilder(builder: (context, boxConstraints) {
+                    final double maxWidth = boxConstraints.maxWidth;
+                    final double maxHeight = boxConstraints.maxHeight;
+                    return widget.enableHero
+                        ? Hero(
+                            transitionOnUserGestures: true,
+                            flightShuttleBuilder:
+                                NetworkImgLayer.heroFlightShuttleBuilder,
+                            tag: widget.bangumiItem.id,
+                            child: NetworkImgLayer(
+                              src: widget.bangumiItem.images['large'] ?? '',
+                              width: maxWidth,
+                              height: maxHeight,
+                            ),
+                          )
+                        : NetworkImgLayer(
+                            src: widget.bangumiItem.images['large'] ?? '',
                             width: maxWidth,
                             height: maxHeight,
-                          ),
-                        )
-                      : NetworkImgLayer(
-                          src: bangumiItem.images['large'] ?? '',
-                          width: maxWidth,
-                          height: maxHeight,
-                        );
-                }),
-              ),
-              BangumiContent(bangumiItem: bangumiItem)
-            ],
+                          );
+                  }),
+                ),
+                BangumiContent(bangumiItem: widget.bangumiItem)
+              ],
+            ),
           ),
         ),
       ),
