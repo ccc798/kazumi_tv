@@ -68,6 +68,7 @@ class _VideoPageState extends State<VideoPage>
 
   final _episodePanelKey = GlobalKey<EpisodeSelectionPanelState>();
   final _sidePanelKey = GlobalKey<VideoSidePanelState>();
+  final _playerItemKey = GlobalKey<PlayerItemState>();
   late TabController tabController;
 
   late final bool disableAnimations;
@@ -304,11 +305,22 @@ class _VideoPageState extends State<VideoPage>
   @override
   Widget build(BuildContext context) {
     return PopScope(
+      // A television remote has no pointer, so its Back press first dismisses
+      // the transport bar - exactly like native TV players - and only leaves
+      // the episode on the next press. Phones keep the plain OS behaviour.
+      canPop: !isTelevision(),
       onPopInvokedWithResult: (bool didPop, Object? result) {
         if (didPop) {
           setState(() => _isExiting = true);
           playerController.beginShutdown();
+          return;
         }
+        final playerItem = _playerItemKey.currentState;
+        if (playerItem != null && playerController.panel.showVideoController) {
+          playerItem.hideVideoController();
+          return;
+        }
+        Navigator.of(context).pop();
       },
       child: Observer(builder: (context) {
         final bool isPip = videoPageController.isPip;
@@ -467,6 +479,7 @@ class _VideoPageState extends State<VideoPage>
           child: playerLoading
               ? const SizedBox.shrink()
               : PlayerItem(
+                  key: _playerItemKey,
                   fillsWindow: layout.fillsWindow,
                   playerController: playerController,
                   videoPageController: videoPageController,

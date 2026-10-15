@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kazumi/services/storage/storage.dart';
 import 'package:kazumi/utils/constants.dart';
+import 'package:kazumi/utils/device.dart';
 
 typedef PlayerShortcutAction = FutureOr<void> Function();
 
@@ -73,8 +74,14 @@ class _PlayerKeyboardShortcutsState extends State<PlayerKeyboardShortcuts> {
   }
 
   Map<String, List<String>> _loadShortcuts() {
+    final defaults = <String, List<String>>{
+      ...defaultShortcuts,
+      // A remote control has no pointer, so OK must be able to open the
+      // on-screen controls that a tap would otherwise reveal.
+      if (isTelevision()) ...televisionExtraShortcuts,
+    };
     return <String, List<String>>{
-      for (final entry in defaultShortcuts.entries)
+      for (final entry in defaults.entries)
         entry.key: GStorage.getStringListSettingByName(
           'shortcut_${entry.key}',
           defaultValue: entry.value,

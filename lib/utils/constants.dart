@@ -229,6 +229,12 @@ final Map<String, List<String>> defaultShortcuts = const {
   'speeddown': ['Z'],
 };
 
+// 电视端额外快捷键：遥控器只有方向键和 OK 键，没有指针可以点击画面，
+// 所以 OK 键负责呼出/收起播放器控制栏。
+final Map<String, List<String>> televisionExtraShortcuts = const {
+  'togglepanel': ['Select', 'Enter'],
+};
+
 // 键位别名
 final Map<String, String> keyAliases = {
   ' ': '空格',
@@ -262,4 +268,5 @@ final Map<String, String> shortcutsChineseName = {
   'speed3': '倍速：3x',
   'speedup': '倍速加',
   'speeddown': '倍速减',
+  'togglepanel': '控制栏显隐',
 };

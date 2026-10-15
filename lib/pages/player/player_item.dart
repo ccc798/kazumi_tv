@@ -65,10 +65,10 @@ class PlayerItem extends StatefulWidget {
   final VoidCallback pauseForTimedShutdown;
 
   @override
-  State<PlayerItem> createState() => _PlayerItemState();
+  PlayerItemState createState() => PlayerItemState();
 }
 
-class _PlayerItemState extends State<PlayerItem>
+class PlayerItemState extends State<PlayerItem>
     with
         WindowListener,
         WidgetsBindingObserver,
@@ -373,6 +373,7 @@ class _PlayerItemState extends State<PlayerItem>
       'speed3': () => setPlaybackSpeed(3.0),
       'speedup': () => handleSpeedChange('up'),
       'speeddown': () => handleSpeedChange('down'),
+      'togglepanel': () => _toggleVideoController(),
     };
     keyboardLongPressActions = {
       'forward': PlayerLongPressShortcutActions(
@@ -487,6 +488,12 @@ class _PlayerItemState extends State<PlayerItem>
       showVideoController();
     }
   }
+
+  /// On televisions the on-screen controls double as a focusable toolbar: while
+  /// they are visible the D-pad must move focus between them instead of seeking,
+  /// so the transport shortcuts stand down for that moment.
+  bool get _televisionPanelFocusMode =>
+      isTelevision() && playerController.panel.showVideoController;
 
   void _handleTap(PointerDeviceKind? pointerKind) {
     if (shouldToggleControllerOnPrimaryTap(
@@ -1425,7 +1432,8 @@ class _PlayerItemState extends State<PlayerItem>
                       focusScopeNode: widget.keyboardFocus,
                       actions: keyboardActions,
                       longPressActions: keyboardLongPressActions,
-                      isBlocked: () => _openPlayerMenuCount > 0,
+                      isBlocked: () =>
+                          _openPlayerMenuCount > 0 || _televisionPanelFocusMode,
                     ),
                     Center(
                       key: _videoSurfaceKey,
